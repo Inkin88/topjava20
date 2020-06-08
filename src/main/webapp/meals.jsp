@@ -13,6 +13,7 @@
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
+        <th colspan=2>Action</th>
     </tr>
     <c:forEach items="${mealList}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
@@ -22,11 +23,13 @@
             </td>
             <td><%=meal.getDescription()%>
             </td>
-
-            <td style="color:${meal.excess ? 'red' : 'darkgreen'}"><%=meal.getCalories()%>
+            <td style="background-color:${meal.excess ? 'red' : 'darkgreen'}"><%=meal.getCalories()%>
             </td>
+            <td><a href="meals?action=edit&id=${meal.id}">Edit</a></td>
+            <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
+<p><a href="meals?action=add">Add meal</a></p>
 </body>
 </html>
