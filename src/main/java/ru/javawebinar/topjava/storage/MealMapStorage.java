@@ -2,15 +2,20 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealMapStorage implements Storage {
+    private static final AtomicInteger counter = new AtomicInteger(1);
 
     private Map<Integer, Meal> mealMap = new HashMap<>();
 
     @Override
     public void create(Meal meal) {
+        meal.setId(counter.getAndIncrement());
         mealMap.putIfAbsent(meal.getId(), meal);
     }
 
@@ -29,7 +34,8 @@ public class MealMapStorage implements Storage {
         mealMap.put(meal.getId(), meal);
     }
 
-    public Map<Integer, Meal> getMealMap() {
-        return mealMap;
+    @Override
+    public List<Meal> getAll() {
+        return new ArrayList<>(mealMap.values());
     }
 }

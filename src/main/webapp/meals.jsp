@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
+<%@ taglib prefix="javatime" uri="http://sargue.net/jsptags/time" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -16,20 +16,19 @@
         <th colspan=2>Action</th>
     </tr>
     <c:forEach items="${mealList}" var="meal">
-        <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-        <tr>
+        <tr style="background-color:${meal.excess ? 'red' : 'darkgreen'}">
             <javatime:format value="${meal.dateTime}" pattern="yyyy-MM-dd HH:mm" var="parsedDate"/>
             <td>${parsedDate}
             </td>
-            <td><%=meal.getDescription()%>
+            <td>${meal.description}
             </td>
-            <td style="background-color:${meal.excess ? 'red' : 'darkgreen'}"><%=meal.getCalories()%>
-            </td>
+            <td>${meal.calories}</td>
             <td><a href="meals?action=edit&id=${meal.id}">Edit</a></td>
             <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
 <p><a href="meals?action=add">Add meal</a></p>
+<p><a href="index.html">Home</a></p>
 </body>
 </html>

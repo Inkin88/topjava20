@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.storage.MealMapStorage;
+import ru.javawebinar.topjava.storage.Storage;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -13,13 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -27,13 +24,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    private MealMapStorage storage = new MealMapStorage();
+    private Storage storage = new MealMapStorage();
 
-    public MealServlet() {
-        initStorage();
-    }
-
-    private void initStorage() {
+    public void init() {
         List<Meal> mealList = MealsUtil.getMealList();
         for (Meal ml : mealList) {
             storage.create(ml);
@@ -42,17 +35,10 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Collection<Meal> meals = storage.getMealMap().values();
-        Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
-                .collect(
-                        Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum)
-                );
-        List<MealTo> mealsTo = new ArrayList<>();
-        for (Meal meal : meals) {
-            mealsTo.add(new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), caloriesSumByDate.get(meal.getDate()) > 2000));
-        }
+        log.debug("redirect to meals");
         String action = req.getParameter("action");
         if (action == null) {
+            List<MealTo> mealsTo = MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000);
             req.setAttribute("mealList", mealsTo);
             req.getRequestDispatcher("/meals.jsp").forward(req, resp);
             return;
@@ -61,14 +47,17 @@ public class MealServlet extends HttpServlet {
         switch (action) {
             case "delete":
                 int id = Integer.parseInt(req.getParameter("id"));
+                log.debug("Delete meal :" + id);
                 storage.delete(id);
                 resp.sendRedirect("meals");
                 return;
             case "edit":
                 id = Integer.parseInt(req.getParameter("id"));
+                log.debug("Edit meal :" + id);
                 meal = storage.get(id);
                 break;
             case "add":
+                log.debug("Add meal");
                 meal = new Meal();
                 break;
             default:
@@ -80,20 +69,19 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("Create or Update meal");
         req.setCharacterEncoding("UTF-8");
         LocalDateTime ldt = LocalDateTime.parse(req.getParameter("localDateTime"));
         String description = req.getParameter("description");
         int calories = Integer.parseInt(req.getParameter("calories"));
         int id = Integer.parseInt(req.getParameter("id"));
-        Meal meal;
+        log.debug("Parametres: id "+ id + "Date " + ldt + "calories " + calories + "description " + description);
         if (id == 0) {
-            meal = new Meal(ldt, description, calories);
-            storage.getMealMap().put(meal.getId(), meal);
+            storage.create(new Meal(ldt, description, calories));
+            log.debug("Meal added");
         } else {
-            meal = storage.get(id);
-            meal.setCalories(calories);
-            meal.setDateTime(ldt);
-            meal.setDescription(description);
+            storage.update(new Meal(id, ldt, description, calories));
+            log.debug("Meal updated");
         }
         resp.sendRedirect("meals");
     }

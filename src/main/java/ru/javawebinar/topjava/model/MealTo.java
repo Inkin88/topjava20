@@ -25,14 +25,6 @@ public class MealTo {
         return dateTime;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
     public boolean isExcess() {
         return excess;
     }
@@ -43,6 +35,14 @@ public class MealTo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCalories() {
+        return calories;
     }
 
     @Override
