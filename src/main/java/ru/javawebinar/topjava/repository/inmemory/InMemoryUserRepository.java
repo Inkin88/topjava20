@@ -34,7 +34,6 @@ public class InMemoryUserRepository implements UserRepository {
             repository.put(user.getId(), user);
             return user;
         }
-        // handle case: update, but not present in storage
         return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
@@ -56,8 +55,8 @@ public class InMemoryUserRepository implements UserRepository {
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         return repository.values().stream().
-                filter(a -> a.getEmail().equals(email))
+                filter(user -> user.getEmail().equals(email))
                 .findFirst()
-                .get();
+                .orElse(null);
     }
 }
