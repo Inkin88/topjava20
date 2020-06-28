@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,7 +10,7 @@ import java.time.LocalTime;
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
         @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT m FROM Meal m where m.dateTime >=: start and m.dateTime <: end order by m.dateTime DESC")
+        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime >=: start AND m.dateTime <: end ORDER BY m.dateTime DESC")
 })
 
 @Entity
@@ -25,7 +26,7 @@ public class Meal extends AbstractBaseEntity {
     public static final String GET_BETWEEN = "Meal.between";
 
     @Column(name = "date_time", nullable = false)
-    @NotBlank
+    @NotNull
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
@@ -33,7 +34,7 @@ public class Meal extends AbstractBaseEntity {
     private String description;
 
     @Column(name = "calories", nullable = false)
-    @NotBlank
+    @NotNull
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
