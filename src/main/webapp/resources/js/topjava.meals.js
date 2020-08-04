@@ -26,10 +26,19 @@ $(function () {
                 "order": [
                     [
                         0,
-                        "asc"
+                        "desc"
                     ]
                 ]
-            })
+            }),
+        update: filter
         }
     );
 });
+
+function filter() {
+    $.ajax({
+        type: "GET",
+        url: "user/meals/filer",
+        data: $('#filteredForm').serialize()
+    }).done(updateTableWithData)
+}
