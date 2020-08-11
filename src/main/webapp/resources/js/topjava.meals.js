@@ -38,7 +38,7 @@ $(function () {
 function filter() {
     $.ajax({
         type: "GET",
-        url: "user/meals/filer",
+        url: "user/meals/filter",
         data: $('#filteredForm').serialize()
     }).done(updateTableWithData)
 }

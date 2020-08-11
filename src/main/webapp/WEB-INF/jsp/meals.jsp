@@ -15,19 +15,19 @@
         <form id="filteredForm">
             <div class="form-group">
                 <label for="startDate"><spring:message code="meal.startDate"/>:</label>
-                <input type="date" class="form-control" name="startDate" id="startDate" value="${param.startDate}">
+                <input type="date" class="form-control" name="startDate" id="startDate">
             </div>
             <div class="form-group">
                 <label for="endDate"><spring:message code="meal.endDate"/>:</label>
-                <input type="date" class="form-control" name="endDate" id="endDate" value="${param.endDate}">
+                <input type="date" class="form-control" name="endDate" id="endDate">
             </div>
             <div class="form-group">
                 <label for="startTime"><spring:message code="meal.startTime"/>:</label>
-                <input type="time" class="form-control" name="startTime" id="startTime" value="${param.startTime}">
+                <input type="time" class="form-control" name="startTime" id="startTime">
             </div>
             <div class="form-group">
                 <label for="endTime"><spring:message code="meal.endTime"/>:</label>
-                <input type="time" class="form-control" name="endTime" id="endTime" value="${param.endTime}">
+                <input type="time" class="form-control" name="endTime" id="endTime">
             </div>
             <button class="btn btn-primary" onclick="filter()">
                 <span class="fa fa-filter"></span>
